@@ -31,7 +31,6 @@
       );
       const products = await response.json();
 
-      // Store products in localStorage for future use
       localStorage.setItem("carouselProducts", JSON.stringify(products));
       return products;
     } catch (error) {
@@ -92,26 +91,6 @@
     return svg;
   };
 
-  const createHeartPlusIcon = () => {
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    svg.setAttribute("height", "24px");
-    svg.setAttribute("viewBox", "0 -960 960 960");
-    svg.setAttribute("width", "24px");
-    svg.setAttribute("fill", "#f28e00");
-    svg.setAttribute("stroke", "#f28e00");
-    svg.setAttribute("stroke-width", "2");
-
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute(
-      "d",
-      "M440-501Zm0 381L313-234q-72-65-123.5-116t-85-96q-33.5-45-49-87T40-621q0-94 63-156.5T260-840q52 0 99 22t81 62q34-40 81-62t99-22q81 0 136 45.5T831-680h-85q-18-40-53-60t-73-20q-51 0-88 27.5T463-660h-46q-31-45-70.5-72.5T260-760q-57 0-98.5 39.5T120-621q0 33 14 67t50 78.5q36 44.5 98 104T440-228q26-23 61-53t56-50l9 9 19.5 19.5L605-283l9 9q-22 20-56 49.5T498-172l-58 52Zm280-160v-120H600v-80h120v-120h80v120h120v80H800v120h-80Z"
-    );
-
-    svg.appendChild(path);
-    return svg;
-  };
-
   const buildHTML = (products) => {
     const favorites =
       JSON.parse(localStorage.getItem("carouselFavorites")) || [];
@@ -146,6 +125,7 @@
       const image = createElement("img", ["product-image"], {
         src: product.img,
         alt: product.name,
+        loading: "lazy",
       });
       imageContainer.appendChild(image);
 
@@ -276,325 +256,373 @@
 
   const buildCSS = () => {
     const css = `
-        * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-        }
-  
-        :root {
-          --main-color: #f28e00;
-          --main-bg-color: #fef6eb;
-        }
-  
-        .custom-carousel {
-          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-          position: relative;
-          width: 100%;
-          padding-top: 25px;
-          padding-right: 15px;
-          padding-left: 15px;
-          margin-right: auto;
-          margin-left: auto;
-          max-width: 1320px;
-        }
-  
-        .carousel-inner-container {
-          width: 90%;
-          margin: 0 auto;
-          box-sizing: border-box;
-        }
-  
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      
+      :root {
+        --main-color: #f28e00;
+        --main-bg-color: #fef6eb;
+        --carousel-gap: 20px;
+      }
+      
+      .custom-carousel {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        position: relative;
+        width: 100%;
+        padding-top: 25px;
+        margin-right: auto;
+        margin-left: auto;
+        max-width: 1320px;
+        box-sizing: border-box;
+      }
+      
+      .carousel-inner-container {
+        padding-right: 10px;
+        padding-left: 10px;
+        width: 100%;
+        margin: 0 auto;
+        box-sizing: border-box;
+      }
+      
+      .carousel-title {
+        font-size: 28.8px;
+        padding: 25px 67px;
+        color: var(--main-color);
+        background-color: var(--main-bg-color);
+        border-top-left-radius: 35px;
+        border-top-right-radius: 35px;
+        font-weight: 700;
+        line-height: 1.11;
+        width: 100%;
+        box-sizing: border-box;
+        text-align: start;
+        font-family: Quicksand-Bold;
+      }
+      
+      @media (max-width: 480px) {
         .carousel-title {
-          font-size: 28.8px;
-          padding: 25px 67px;
-          color: var(--main-color);
-          background-color: var(--main-bg-color);
-          border-top-left-radius: 35px;
-          border-top-right-radius: 35px;
-          font-weight: 700;
-          line-height: 1.11;
-          width: 100%;
-          box-sizing: border-box;
-          text-align: start;
-          font-family: Quicksand-Bold;
+          padding: 0 22px 0 10px;
         }
-  
-        @media (max-width: 480px) {
-          .carousel-title {
-            padding: 0 22px 0 10px;
-            background-color: #fff;
-          }
-        }
-  
-        .carousel-container {
-          position: relative;
-          display: flex;
-          align-items: center;
-          width: 100%;
-        }
-  
-        .carousel-wrapper {
-          width: 100%;
-          overflow: hidden;
-          position: relative;
-        }
-  
-        .carousel-track {
-          display: flex;
-          transition: transform 0.5s ease;
-          box-sizing: border-box;
-          gap: 20px;
-        }
-  
-        .product-item {
-          width: 100%;
-          z-index: 1;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          flex-direction: column;
-          height: 545px;
-          min-width: 260px;
-          font-family: Poppins, "cursive";
-          position: relative;
-          border: 1px solid #ededed;
-          border-radius: 10px;
-          padding: 15px;
-          display: flex;
-          flex-direction: column;
-          cursor: pointer;
-          color: #7d7d7d;
-          margin: 0 0 20px 3px;
-          position: relative;
-          text-decoration: none;
-          margin-top: 20px;
-        }
-  
-        .product-item:hover {
-          box-shadow: 0 0 0 0 #00000030, inset 0 0 0 3px var(--main-color);
-        }
-  
-        .product-image-container {
-          position: relative;
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin-bottom: 15px;
-        }
-  
-        .product-image {
-          max-width: 100%;
-          max-height: 100%;
-          object-fit: contain;
-        }
-  
-        .favorite-button {
-          position: absolute;
-          background-color: #fff;
-          top: 5px;
-          right: 5px;
-          background: none;
-          border: none;
-          cursor: pointer;
-          width: 50px;
-          height: 50px;
-          z-index: 2;
-          padding: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          box-shadow: 0 2px 4px 0 #00000024;
-        }
-  
-        .favorite-button:hover {
-          border: 1px solid var(--main-color);
-        }
-  
-        .favorite-button svg {
-          transition: fill 0.3s, stroke 0.3s;
-        }
-  
-        .favorite-active svg {
-          fill: var(--main-color);
-          stroke: var(--main-color);
-        }
-  
-        .product-info {
-          margin-bottom: 10px;
-          min-height: 60px;
-          display: inline;
-          color: #7d7d7d;
-        }
-  
+      }
+      
+      .carousel-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+      
+      .carousel-wrapper {
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+      }
+      
+      .carousel-track {
+        display: flex;
+        transition: transform 0.5s ease;
+        box-sizing: border-box;
+        gap: var(--carousel-gap);
+      }
+      
+      .product-item {
+        width: 100%;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: column;
+        height: 545px;
+        min-width: 260px;
+        flex: 1;
+        font-family: Poppins, "cursive";
+        position: relative;
+        border: 1px solid #ededed;
+        border-radius: 10px;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        color: #7d7d7d;
+        margin: 0 0 20px 0;
+        position: relative;
+        text-decoration: none;
+        margin-top: 20px;
+        box-sizing: border-box;
+      }
+      
+      .product-item:hover {
+        box-shadow: 0 0 0 0 #00000030, inset 0 0 0 3px var(--main-color);
+      }
+      
+      .product-image-container {
+        position: relative;
+        width: 100%;
+        height: 250px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      
+      .product-image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      
+      .favorite-button {
+        position: absolute;
+        background-color: #fff;
+        top: 5px;
+        right: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 50px;
+        height: 50px;
+        z-index: 2;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px 0 #00000024;
+      }
+      
+      .favorite-button:hover {
+        border: 1px solid var(--main-color);
+      }
+      
+      .favorite-button svg {
+        transition: fill 0.3s, stroke 0.3s;
+      }
+      
+      .favorite-active svg {
+        fill: var(--main-color);
+        stroke: var(--main-color);
+      }
+      
+      .product-info {
+        margin-bottom: 10px;
+        min-height: 60px;
+        display: inline;
+        color: #7d7d7d;
+      }
+      
+      .product-item-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 17px 17px;
+        width: 100%;
+      }
+      
+      @media (max-width: 480px) {
         .product-item-content {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          padding: 0 17px 17px;
+          padding: 0 10px 10px;
         }
-  
-        @media (max-width: 480px) {
-          .product-item-content {
-            padding: 0 10px 10px;
-          }
+      }
+      
+      @media screen and (max-width: 375px) {
+        .product-item-content {
+          padding: 5px 5px 10px 0;
         }
-  
-        @media screen and (max-width: 375px) {
-          .product-item-content {
-            padding: 5px 5px 10px 0;
-          }
+      }
+      
+      .product-brand {
+        font-weight: bold;
+        white-space: nowrap;
+        font-size: 14px;
+      }
+      
+      .product-name {
+        font-size: 14px;
+        line-height: 1.4;
+      }
+      
+      .product-price-container {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        height: 43px;
+      }
+      
+      .product-original-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .product-original-price {
+        color: #999;
+        text-decoration: line-through;
+        font-size: 14px;
+        margin-right: 8px;
+      }
+      
+      .product-price {
+        color: #333;
+        font-weight: bold;
+        font-size: 18px;
+      }
+      
+      .product-discount {
+        display: inline-block;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+      }
+      
+      .add-to-cart-button {
+        width: 100%;
+        background-color: var(--main-bg-color);
+        color: var(--main-color);
+        border: none;
+        border-radius: 37.5px;
+        margin-top: 19px;
+        padding: 15px 20px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      
+      .add-to-cart-button:hover {
+        color: white;
+        background-color: var(--main-color);
+      }
+      
+      .carousel-prev,
+      .carousel-next {
+        background-color: var(--main-bg-color);
+        border: 1px solid var(--main-bg-color);
+        color: var(--main-color);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 3;
+        transition: all 0.3s ease;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 24px;
+        padding: 1px 6px;
+      }
+      
+      .carousel-prev {
+        left: 40px;
+      }
+      
+      .carousel-next {
+        right: 40px;
+      }
+      
+      .carousel-prev:hover,
+      .carousel-next:hover {
+        background-color: white;
+        border: 1px solid var(--main-color);
+      }
+      
+      .carousel-prev.disabled,
+      .carousel-next.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      @media (min-width: 1281px) {
+        .product-item {
+          flex: 0 0 calc(20% - var(--carousel-gap));
+          min-width: calc(20% - var(--carousel-gap));
         }
-  
-        .product-brand {
-          font-weight: bold;
-          white-space: nowrap;
-          font-size: 14px;
+      
+        .carousel-prev {
+          left: -50px;
         }
-  
-        .product-name {
-          font-size: 14px;
-          line-height: 1.4;
+      
+        .carousel-next {
+          right: -50px;
         }
-  
-        .product-price-container {
-          display: flex;
-          flex-direction: column;
-          align-items: start;
-          height: 43px;
+      }
+      
+      @media (min-width: 992px) and (max-width: 1280px) {
+        .custom-carousel {
+          max-width: 1200px;
         }
-  
-        .product-original-section {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: center;
+      
+        .product-item {
+          flex: 0 0 calc(25% - var(--carousel-gap));
+          min-width: calc(25% - var(--carousel-gap));
         }
-  
-        .product-original-price {
-          color: #999;
-          text-decoration: line-through;
-          font-size: 14px;
-          margin-right: 8px;
+      
+        .carousel-inner-container {
+          width: 85%;
         }
-  
-        .product-price {
-          color: #333;
-          font-weight: bold;
-          font-size: 18px;
+      
+        .carousel-prev {
+          left:20px;
         }
-  
-        .product-discount {
-          display: inline-block;
-          color: white;
-          font-size: 18px;
-          font-weight: bold;
+      
+        .carousel-next {
+          right: 20px;
         }
-  
-        .add-to-cart-button {
+      }
+      
+      @media (min-width: 769px) and (max-width: 991px) {
+        .custom-carousel {
+          max-width: 960px;
+        }
+      
+        .product-item {
+          flex: 0 0 calc(33.333% - var(--carousel-gap));
+          min-width: calc(33.333% - var(--carousel-gap));
+        }
+      
+        .carousel-inner-container {
+          width: 80%;
+        }
+      
+        .carousel-prev {
+          left: 30px;
+        }
+      
+        .carousel-next {
+          right: 30px;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .custom-carousel {
+          max-width: 100%;
+          padding: 0;
+        }
+      
+        .product-item {
+          flex: 0 0 calc(50% - var(--carousel-gap));
+          min-width: calc(50% - var(--carousel-gap));
+        }
+      
+        .carousel-inner-container {
           width: 100%;
-          background-color: var(--main-bg-color);
-          color: var(--main-color);
-          border: none;
-          border-radius: 37.5px;
-          margin-top: 19px;
-          padding: 15px 20px;
-          font-size: 14px;
-          font-weight: bold;
-          cursor: pointer;
-          transition: background-color 0.3s;
+          padding: 0 5px;
         }
-  
-        .add-to-cart-button:hover {
-          color: white;
-          background-color: var(--main-color);
-        }
-  
+      
         .carousel-prev,
         .carousel-next {
-          background-color: var(--main-bg-color);
-          border: 1px solid var(--main-bg-color);
-          color: var(--main-color);
-          border-radius: 50%;
-          width: 50px;
-          height: 50px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          z-index: 3;
-          transition: all 0.3s ease;
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          font-size: 24px;
-          padding: 1px 6px;
+          display: none;
         }
-  
-        .carousel-prev {
-          left: 10px;
-        }
-  
-        .carousel-next {
-          right: 10px;
-        }
-  
-        .carousel-prev:hover,
-        .carousel-next:hover {
-          background-color: white;
-          border: 1px solid var(--main-color);
-        }
-  
-        @media (max-width: 992px) {
-          .custom-carousel {
-            max-width: 960px;
-          }
-  
-          .product-item {
-            flex: 0 0 calc(33.333% - 13.3px);
-            min-width: calc(33.333% - 13.3px);
-          }
-  
-          .carousel-inner-container {
-            width: 80%;
-          }
-        }
-  
-        @media (max-width: 768px) {
-          .custom-carousel {
-            max-width: 720px;
-          }
-  
-          .product-item {
-            flex: 0 0 calc(50% - 10px);
-            min-width: calc(50% - 10px);
-          }
-  
-          .carousel-inner-container {
-            width: 75%;
-          }
-        }
-  
-        @media (max-width: 576px) {
-          .custom-carousel {
-            max-width: 540px;
-          }
-  
-          .product-item {
-            flex: 0 0 100%;
-            min-width: 100%;
-          }
-  
-          .carousel-inner-container {
-            width: 70%;
-          }
-        }
-  
-        .color-green {
-          color: #00a365;
-        } 
+      }
+      
+      .color-green {
+        color: #00a365;
+      }
       `;
 
     const style = document.createElement("style");
@@ -610,13 +638,62 @@
     const carouselItems = document.querySelectorAll(".product-item");
     const favoriteButtons = document.querySelectorAll(".favorite-button");
     const addToCartButtons = document.querySelectorAll(".add-to-cart-button");
+    const carouselWrapper = document.querySelector(".carousel-wrapper");
 
     let position = 0;
-    let itemWidth = carouselItems[0].offsetWidth;
-    let visibleItems = Math.floor(
-      carouselTrack.parentElement.offsetWidth / itemWidth
+    let itemsPerView = calculateItemsPerView();
+    let maxPosition = Math.max(0, carouselItems.length - itemsPerView);
+    let itemWidth = 0;
+    let gapWidth = parseInt(
+      getComputedStyle(document.documentElement).getPropertyValue(
+        "--carousel-gap"
+      )
     );
-    let maxPosition = carouselItems.length - visibleItems;
+
+    if (isNaN(gapWidth)) {
+      gapWidth = 20;
+    }
+
+    function calculateItemsPerView() {
+      if (window.innerWidth >= 1281) {
+        return 5;
+      } else if (window.innerWidth >= 992) {
+        return 4;
+      } else if (window.innerWidth >= 769) {
+        return 3;
+      } else {
+        return 2;
+      }
+    }
+
+    function updateItemWidth() {
+      const availableWidth = carouselWrapper.offsetWidth;
+      const itemsCount = calculateItemsPerView();
+      const totalGapWidth = gapWidth * (itemsCount - 1);
+
+      itemWidth = (availableWidth - totalGapWidth) / itemsCount;
+
+      carouselItems.forEach((item) => {
+        item.style.minWidth = `${itemWidth}px`;
+        item.style.flexBasis = `${itemWidth}px`;
+      });
+    }
+
+    function updateCarouselPosition() {
+      const scrollAmount = position * (itemWidth + gapWidth);
+      carouselTrack.style.transform = `translateX(-${scrollAmount}px)`;
+
+      updateButtonStates();
+    }
+
+    function updateButtonStates() {
+      if (window.innerWidth <= 768) {
+        return;
+      }
+
+      prevButton.classList.toggle("disabled", position <= 0);
+      nextButton.classList.toggle("disabled", position >= maxPosition);
+    }
 
     const debounce = (func, delay) => {
       let timeout;
@@ -627,25 +704,22 @@
     };
 
     const handleResize = debounce(() => {
-      itemWidth = carouselItems[0].offsetWidth;
-      visibleItems = Math.floor(
-        carouselTrack.parentElement.offsetWidth / itemWidth
-      );
-      maxPosition = Math.max(0, carouselItems.length - visibleItems);
+      const oldItemsPerView = itemsPerView;
+      itemsPerView = calculateItemsPerView();
+      maxPosition = Math.max(0, carouselItems.length - itemsPerView);
 
-      if (position > maxPosition) {
-        position = maxPosition;
-        updateCarouselPosition();
+      updateItemWidth();
+
+      if (oldItemsPerView !== itemsPerView) {
+        position = Math.min(position, maxPosition);
       }
+
+      updateCarouselPosition();
     }, 200);
 
     window.addEventListener("resize", handleResize);
-
-    const updateCarouselPosition = () => {
-      carouselTrack.style.transform = `translateX(-${
-        position * (itemWidth + 20)
-      }px)`;
-    };
+    updateItemWidth();
+    updateButtonStates();
 
     prevButton.addEventListener("click", () => {
       if (position > 0) {
@@ -660,6 +734,67 @@
         updateCarouselPosition();
       }
     });
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let isSwiping = false;
+
+    carouselTrack.addEventListener(
+      "touchstart",
+      (e) => {
+        touchStartX = e.touches[0].clientX;
+        isSwiping = true;
+      },
+      { passive: true }
+    );
+
+    carouselTrack.addEventListener(
+      "touchmove",
+      (e) => {
+        if (!isSwiping) return;
+
+        e.preventDefault();
+
+        touchEndX = e.touches[0].clientX;
+        const diffX = touchStartX - touchEndX;
+
+        if (
+          (diffX > 0 && position < maxPosition) ||
+          (diffX < 0 && position > 0)
+        ) {
+          const moveX = -position * (itemWidth + gapWidth) - diffX * 0.5;
+          carouselTrack.style.transform = `translateX(${moveX}px)`;
+        }
+      },
+      { passive: false }
+    );
+
+    carouselTrack.addEventListener(
+      "touchend",
+      (e) => {
+        if (!isSwiping) return;
+
+        touchEndX = e.changedTouches[0].clientX;
+        handleSwipe();
+        isSwiping = false;
+      },
+      { passive: true }
+    );
+
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      const swipeDistance = touchStartX - touchEndX;
+
+      if (swipeDistance > swipeThreshold && position < maxPosition) {
+        position++;
+        updateCarouselPosition();
+      } else if (swipeDistance < -swipeThreshold && position > 0) {
+        position--;
+        updateCarouselPosition();
+      } else {
+        updateCarouselPosition();
+      }
+    }
 
     carouselItems.forEach((item) => {
       item.addEventListener("click", (event) => {
@@ -685,35 +820,6 @@
         const productId = button.dataset.productId;
         toggleFavorite(productId, button);
       });
-
-      if (navigator.maxTouchPoints === 0) {
-        button.addEventListener("mouseenter", (event) => {
-          event.stopPropagation();
-
-          const productId = button.dataset.productId;
-          const favorites =
-            JSON.parse(localStorage.getItem("carouselFavorites")) || [];
-
-          const isFavorite = favorites.includes(productId);
-          if (!isFavorite) {
-            button.innerHTML = "";
-            button.appendChild(createHeartPlusIcon());
-          }
-        });
-
-        button.addEventListener("mouseleave", (event) => {
-          event.stopPropagation();
-
-          const productId = button.dataset.productId;
-          const favorites =
-            JSON.parse(localStorage.getItem("carouselFavorites")) || [];
-
-          const isFavorite = favorites.includes(productId);
-
-          button.innerHTML = "";
-          button.appendChild(createHeartIcon(isFavorite));
-        });
-      }
     });
 
     addToCartButtons.forEach((button) => {
